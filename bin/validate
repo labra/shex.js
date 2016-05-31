@@ -30,7 +30,7 @@ var ShExLoader = require("../lib/ShExLoader");
 var ShExWriter = require("../lib/ShExWriter"); // for verbose output
 var ShExValidator = require("../lib/ShExValidator");
 var Path = require("path");
-var ValidatorOptions = {  };
+var ValidatorOptions = { diagnose: true };
 // var RunMode = { NORMAL: 0, ERROR: 1, DRYRUN: 2, USAGE: 4, HELP: 6 };
 
 // Generate command line interface
@@ -228,6 +228,22 @@ function runValidator (graph, focusNode, schema, shape, options, results) {
   Object.keys(extensions).forEach(function (ext) {
     extensions[ext].register(validator);
   });
+
+  function optsStr (key, dict) {
+    var r = RegExp(key.substr(key.lastIndexOf("/")).toLowerCase(), "i");
+    var opts = Object.keys(dict).reduce(function (ret, k) {
+      if (k.match(r))
+	ret.push(k);
+      return ret;
+    }, []);
+    return opts.length === 0 ? "" :
+      opts.length === 1 ? ": try " + opts[0] :
+      ": try one of " + opts.join(" , ");
+  }
+  if (!(shape in validator._shapeCompilationByLabel))
+    throw Error("shape " + shape + " not defined" + optsStr(shape, validator._shapeCompilationByLabel));
+  if (!(focusNode in graph._entities))
+    console.warn(Error("node " + focusNode + " not defined" + optsStr(focusNode, graph._entities)));
 
   if (cmds["dry-run"])
     return;

@@ -2,7 +2,7 @@
 
 // shex-to-json http://tracker.example/schemas/Issue.shex
 
-var ShExLoader = require("../lib/ShExLoader");
+var ShExLoader = require("../lib/ShExLoader"); // for verbose output
 
 // Generate command line interface
 var CLI = require("command-line-args")([
