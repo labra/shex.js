@@ -1,1 +1,0 @@
-web: cd rest; node server.js
